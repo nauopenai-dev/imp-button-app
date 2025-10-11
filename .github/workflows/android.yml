@@ -14,35 +14,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-
-
-cat > .github/workflows/android.yml <<'EOF'
-name: Android CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Устанавливаем Android SDK (cmdline-tools)
+      # Устанавливаем Android SDK на раннер
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      # Ставим нужные компоненты SDK под compileSdk 35
+      # Ставим нужные пакеты SDK под compileSdk 35
       - name: Install SDK packages
         run: |
           yes | sdkmanager --licenses
