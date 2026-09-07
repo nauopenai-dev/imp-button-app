@@ -1,36 +1,26 @@
 package com.example.impbutton
 
 import android.os.Bundle
-import android.view.View
-import android.view.animation.OvershootInterpolator
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import androidx.appcompat.app.AppCompatActivity
-import com.example.impbutton.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var b: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        b = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(b.root)
+        setContentView(GameView(this))
 
-        b.redButton.setOnClickListener {
-            if (b.impView.visibility != View.VISIBLE) {
-                b.impView.apply {
-                    scaleX = 0f; scaleY = 0f; alpha = 0f
-                    visibility = View.VISIBLE
-                    animate().alpha(1f).scaleX(1f).scaleY(1f)
-                        .setDuration(350)
-                        .setInterpolator(OvershootInterpolator())
-                        .start()
-                }
-            } else {
-                b.impView.animate()
-                    .alpha(0f).scaleX(0.8f).scaleY(0.8f)
-                    .setDuration(200)
-                    .withEndAction { b.impView.visibility = View.GONE }
-                    .start()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            window.insetsController?.let { controller ->
+                controller.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility =
+                android.view.View.SYSTEM_UI_FLAG_FULLSCREEN or
+                android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         }
     }
 }
