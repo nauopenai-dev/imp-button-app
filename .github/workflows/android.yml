@@ -2,8 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, neon-dodge-android ]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,11 +20,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # Устанавливаем Android SDK на раннер
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      # Ставим нужные пакеты SDK под compileSdk 35
       - name: Install SDK packages
         run: |
           yes | sdkmanager --licenses
@@ -38,5 +37,5 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug.apk
+          name: NeonDodge-APK
           path: app/build/outputs/apk/debug/app-debug.apk
