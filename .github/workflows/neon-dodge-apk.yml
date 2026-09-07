@@ -1,0 +1,50 @@
+name: Build Neon Dodge APK
+
+on:
+  push:
+    branches:
+      - neon-dodge-android
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Export APK with Godot
+        id: export
+        uses: firebelley/godot-export@v8.0.0
+        with:
+          godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.2.2-stable/Godot_v4.2.2-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.2.2-stable/Godot_v4.2.2-stable_export_templates.tpz
+          relative_project_path: ./neon_dodge
+          use_preset_export_path: true
+          presets_to_export: Android
+          export_debug: true
+          verbose: true
+
+      - name: Locate APK
+        shell: bash
+        run: |
+          find . -type f -name '*.apk' -print
+          mkdir -p apk-output
+          APK=$(find . -type f -name '*.apk' | head -n 1)
+          test -n "$APK"
+          cp "$APK" apk-output/NeonDodge.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: NeonDodge-APK
+          path: apk-output/NeonDodge.apk
+          if-no-files-found: error
